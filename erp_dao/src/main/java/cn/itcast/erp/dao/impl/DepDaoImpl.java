@@ -27,59 +27,29 @@ import cn.itcast.erp.entity.Dep;
  *
  */
 @Repository
-public  class DepDaoImpl implements IDepDao{
+public  class DepDaoImpl extends BaseDaoImpl<Dep> implements IDepDao {
+	@Override
+	public Class<Dep> getClazz() {
+		return Dep.class;
+	}
+	@Override 
 	@Resource(name="hibernateTemplate")
-	private HibernateTemplate template;
-	/**
-	 * 离线criteria查询
-	 * dep:查询条件
-	 * firstResult:起始条数
-	 * maxResults:结束条数
-	 */
-
-	public List<Dep> getList(Dep dep,int firstResult, int maxResults) {
-		DetachedCriteria criteria= DetachedCriteria.forClass(Dep.class);
+	public void setTemplate(HibernateTemplate template) {
+		this.template=template;
+	}
+	@Override
+	public DetachedCriteria getDetachedCriteria(Dep t) {
+		DetachedCriteria criteria= DetachedCriteria.forClass(getClazz());
 		//条件查询
-		if(dep!=null){
-			if(dep.getName()!=null&&dep.getName().trim().length()>0){
-				criteria.add(Restrictions.like("name", dep.getName(),MatchMode.ANYWHERE));
+		if(t!=null){
+			if(t.getName()!=null&&t.getName().trim().length()>0){
+				criteria.add(Restrictions.like("name", t.getName(),MatchMode.ANYWHERE));
 			}
-			if(dep.getTele()!=null&&dep.getTele().trim().length()>0){
-				criteria.add(Restrictions.like("tele", dep.getTele(),MatchMode.ANYWHERE));
+			if(t.getTele()!=null&&t.getTele().trim().length()>0){
+				criteria.add(Restrictions.like("tele", t.getTele(),MatchMode.ANYWHERE));
 			}
 		}
-		return (List<Dep>) template.findByCriteria(criteria,firstResult,maxResults) ;
+		return criteria;
 	}
-	/**
-	 * dep:查询条件
-	 * 查询符合条件得条数
-	 */
-	public long getCount(Dep dep) {
-		DetachedCriteria criteria= DetachedCriteria.forClass(Dep.class);
-		//条件查询
-		if(dep!=null){
-			if(dep.getName()!=null&&dep.getName().trim().length()>0){
-				criteria.add(Restrictions.like("name", dep.getName(),MatchMode.ANYWHERE));
-			}
-			if(dep.getTele()!=null&&dep.getTele().trim().length()>0){
-				criteria.add(Restrictions.like("tele", dep.getTele(),MatchMode.ANYWHERE));
-			}
-		}
-		criteria.setProjection(Projections.rowCount());
-		return (Long) template.findByCriteria(criteria).get(0);
-	}
-	public void delete(long uuid) {
-		template.delete(get(uuid));
-	}
-	public void update(Dep dep1) {
-		// TODO Auto-generated method stub
-		template.update(dep1);
-	}
-	public void save(Dep dep1) {
-		// TODO Auto-generated method stub
-		template.save(dep1);
-	}
-	public Dep get(Long uuid) {
-	return	template.get(Dep.class,uuid );
-	}
+	
 }
