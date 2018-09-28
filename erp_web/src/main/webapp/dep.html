@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>部门管理</title>
+<link rel="stylesheet" type="text/css" href="ui/themes/default/easyui.css">   
+<link rel="stylesheet" type="text/css" href="ui/themes/icon.css">   
+<script type="text/javascript" src="ui/jquery.min.js"></script>   
+<script type="text/javascript" src="ui/jquery.easyui.min.js"></script>  
+<script type="text/javascript" src="ui/locale/easyui-lang-zh_CN.js"></script>
+<script type="text/javascript" src="ui/jquery.serializejson.min.js"></script>
+<script>
+	$(function(){
+		$('#dg').datagrid({    
+		    url:'dep_getList',    
+		    columns:[[    
+		        {field:'uuid',title:'部门编号',width:100},    
+		        {field:'name',title:'部门名称',width:100},    
+		        {field:'tele',title:'部门电话',width:100,align:'right'}  , 
+		        {field:'-',title:'编辑', width:80,
+					formatter: function(value,row,index){
+					var ret="<a href='#' onclick='update("+row.uuid+")'> 修改</a>";	
+					return  ret+" "+"<a href='#' onclick='del("+row.uuid+")'> 删除</a>";	
+					}
+				}
+
+		    ]]   ,
+		    pagination:true
+		});  
+		$('#dg').datagrid({
+			toolbar: [{
+				iconCls: 'icon-edit',
+				text:'增加',
+				handler: function(){
+					method='save';
+					$("#dd").window('open');
+				}
+			}]
+		});
+		$("#btnSearch").click(function(){
+			//将表单中得数据转换为JSON对象
+			var formdata=$('#searchFrom').serializeJSON();
+			//将Json对象转换为字符串
+			alert(JSON.stringify(formdata));
+			//$('属性选择器').插件名(方法名,参数);
+			
+			//重新带着参数加载数据
+			$("#dg").datagrid('load',formdata);
+			 /* $.ajax({
+				url:'dep_getList',
+				
+				data:formdata,
+				datatype:'json',
+				type:'post',
+				success:function(rtn){
+				$('#dg').datagrid('loadData',rtn);
+				}
+			})  */
+
+		});
+		$("#btnSave").click(function(){
+			//将表单中得数据转换为JSON对象
+			var formdata=$('#editForm').serializeJSON();
+			//将Json对象转换为字符串
+			//$('属性选择器').插件名(方法名,参数);
+			 $.ajax({
+				url:'dep_'+method,
+				data:formdata,
+				datatype:'json',
+				type:'post',
+				success:function(value){
+					var v=JSON.parse(value)
+					if(v.success){
+						$("#dd").window('close');
+						$('#dg').datagrid('reload');
+					}
+					$.messager.alert('提示',v.msg)
+				}
+			})  
+		});
+		$('#dd').dialog({    
+		    title: '编辑',    
+		    width: 400,    
+		    height: 200,    
+		    closed: true,    
+		    modal: true   
+		});  
+	})
+	function del(uuid){
+		$.messager.confirm('确认','您确认想要删除记录吗？',function(r){    
+		    if (r){    
+		    	$.ajax({
+		    		url:'dep_delete?'+'dep1.uuid='+uuid,
+		    		datatype:'json',
+		    		type:'post',
+		    		success:function(value){
+		    		var v=JSON.parse(value)
+		    		if(v.success){
+						$('#dg').datagrid('reload');
+					}
+					$.messager.alert('提示',v.msg)
+		    		}
+		    	})
+		    }    
+		});
+	}
+	function update(uuid){
+		$('#dd').window('open');
+		$('#editForm').form('clear');
+		method = "update";
+		$('#editForm').form('load','dep_get?dep1.uuid=' + uuid);
+	}
+</script>
+
+</head>
+<div class="easyui-panel" > 
+<form id="searchFrom">
+	<table>
+		<tr>
+			<td>部门名称</td>
+			<td><input type="text" name="dep1.name" ></td>
+		 </tr>
+		 <tr>
+			<td>部门电话</td>
+			<td><input type="text" name="dep1.tele"></td>
+		 </tr>
+	</table>
+</form>
+<button id="btnSearch">查询</button>
+</div>
+<body>
+	<table id="dg"></table>  
+	<div id="dd">
+		<form id="editForm">
+			<table>
+				<tr>
+					<td>部门名称<td>
+					<input type="hidden" name="dep1.uuid" /></td>
+					<td><input type="text"  name="dep1.name"> <td>
+				</tr>
+				<tr>
+					<td>部门电话<td>
+					<td><input type="text" name="dep1.tele"><td>
+				</tr>
+			</table>
+		</form>
+		<button id="btnSave">保存</button>
+	</div>  
+</body>
+</html>
