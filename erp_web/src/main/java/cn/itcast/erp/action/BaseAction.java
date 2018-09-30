@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.apache.struts2.ServletActionContext;
 
@@ -13,6 +14,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 
 import cn.itcast.erp.biz.IBaseBiz;
+import cn.itcast.erp.entity.Emp;
 
 public abstract class BaseAction<T> {
 	
@@ -51,6 +53,14 @@ public abstract class BaseAction<T> {
 		String json=JSON.toJSONString(list,SerializerFeature.DisableCircularReferenceDetect);
 		write(json);
 	}
+	//获取当前用户信息
+	public Emp getInfo(){
+		
+		HttpSession session=ServletActionContext.getRequest().getSession();
+		Emp emp= (Emp) session.getAttribute("loginUser");
+		
+		return  emp;
+	} 
 	
 	public void save(){
 		try {
@@ -68,7 +78,6 @@ public abstract class BaseAction<T> {
 			write(ajaxReturn(true, "删除成功"));
 		} catch(Exception e)  {
 			e.printStackTrace();
-			// TODO: handle finally clause
 			write(ajaxReturn(false, "删除失败"));
 		}
 	}
@@ -77,7 +86,7 @@ public abstract class BaseAction<T> {
 			baseBiz.update(t1);
 			write(ajaxReturn(true, "修改成功"));
 		} catch (Exception e) {
-			// TODO: handle exception
+			e.printStackTrace();
 			write(ajaxReturn(false, "修改失败"));
 		}
 	}
@@ -89,7 +98,7 @@ public abstract class BaseAction<T> {
 		String json=mapJson(jsonString, "t1");
 		write(json);
 	}
-	private String ajaxReturn(boolean success,String msg){
+	protected String ajaxReturn(boolean success,String msg){
 		Map map=new HashMap();
 		map.put("success", success);
 		map.put("msg", msg);

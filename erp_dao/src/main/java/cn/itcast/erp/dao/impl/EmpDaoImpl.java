@@ -4,11 +4,15 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.hibernate.Session;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.orm.hibernate5.HibernateTemplate;
 import org.springframework.stereotype.Repository;
+
+import com.itcast.erp.common.Md5Util;
+import com.itcast.erp.exception.ErpException;
 
 import cn.itcast.erp.dao.IEmpDao;
  import cn.itcast.erp.entity.Emp;
@@ -49,4 +53,34 @@ public  class EmpDaoImpl extends BaseDaoImpl<Emp> implements IEmpDao{
 		}
 		return null;
 	}
+	public void resetPwd(String username, String oldPwd, String newPwd) {
+		int count=	template.bulkUpdate("update Emp set pwd=? where username= ? and pwd= ? ", newPwd,username,oldPwd);
+		if(count==0){
+			throw new ErpException("密码错误");
+		}
+	}
+	@Override
+	//手动添加要修改的值  :以免前台传递过来密码,更新进去
+	public void update(Emp emp) {
+		Emp dbEmp=template.get(Emp.class, emp.getUuid());
+	    //修改真实姓名
+	    dbEmp.setName(emp.getName());
+	    //修改联系电话
+	    dbEmp.setTele(emp.getTele());
+	    //修改联系地址
+	    dbEmp.setAddress(emp.getAddress());
+	    //修改出生年月日
+	    dbEmp.setBirthday(emp.getBirthday());
+	    //修改邮箱地址
+	    dbEmp.setEmail(emp.getEmail());
+	    //修改所属部门
+	    dbEmp.setDep(emp.getDep());
+	    
+	    dbEmp.setUsername(emp.getUsername());
+	    
+	    dbEmp.setGender(emp.getGender());
+		super.update(dbEmp);
+	}
+	
+	
 }

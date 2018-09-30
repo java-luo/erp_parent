@@ -11,4 +11,6 @@ public class DepBizImpl extends IBaseBizImpl implements IDepBiz {
 	public void setBaseDao(IBaseDao baseDao) {
 		this.baseDao=baseDao;
 	}
+	
+	
 }

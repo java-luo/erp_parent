@@ -320,29 +320,29 @@ function closePwd() {
 
 //修改密码
 function serverLogin() {
-    var $newpass = $('#txtNewPass');
-    var $rePass = $('#txtRePass');
-
-    if ($newpass.val() == '') {
-        msgShow('系统提示', '请输入密码！', 'warning');
-        return false;
-    }
-    if ($rePass.val() == '') {
-        msgShow('系统提示', '请在一次输入密码！', 'warning');
-        return false;
-    }
-
-    if ($newpass.val() != $rePass.val()) {
-        msgShow('系统提示', '两次密码不一至！请重新输入', 'warning');
-        return false;
-    }
-
-    $.post('/ajax/editpassword.ashx?newpass=' + $newpass.val(), function(msg) {
-        msgShow('系统提示', '恭喜，密码修改成功！<br>您的新密码为：' + msg, 'info');
-        $newpass.val('');
-        $rePass.val('');
-        close();
-    })
+    var oldPass = $('#oldPass');
+    var newPass = $('#newPass');
+    $.ajax({
+    	url:'emp_reset',
+    	data:{'oldPwd':oldPass.val(),'newPwd':newPass.val()},
+    	datatype:'json',
+    	type:'post',
+    	success:function(data){
+    		var value= JSON.parse(data);
+    		if(value.success){
+    			
+    			msgShow('系统提示', '恭喜，密码修改成功！<br>您的新密码为：' + newPass.val(), 'info');	
+    			//window.location.href='/erp/login.html';
+    			oldPass.val('');
+    			newPass.val('');
+    			$('#w').dialog('close');
+    		}else{
+    			msgShow('系统提示',value.msg, 'error');	
+    		}
+    	}
+    });
+    
+ 
     
 }
 

@@ -10,6 +10,7 @@
   	<module>erp_dao</module>
   	<module>erp_biz</module>
   	<module>erp_web</module>
+  	<module>erp_common</module>
   </modules>
 
   <!-- 定义版本常量 -->
@@ -17,6 +18,7 @@
   	<spring.version>4.2.4.RELEASE</spring.version>
   	<struts.version>2.3.24</struts.version>
   	<hibernate.version>5.0.7.Final</hibernate.version>
+  	<shiro.ver>1.2.3</shiro.ver>
   </properties>
   
   
@@ -135,7 +137,31 @@
 		<artifactId>struts2-convention-plugin</artifactId>
 		<version>2.3.24</version>
 	</dependency>
-	
+		<!-- shiro -->
+	<!-- apache shiro dependencies -->
+        <dependency>
+            <groupId>org.apache.shiro</groupId>
+            <artifactId>shiro-core</artifactId>
+            <version>1.2.3</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.shiro</groupId>
+            <artifactId>shiro-web</artifactId>
+            <version>1.2.3</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.shiro</groupId>
+            <artifactId>shiro-spring</artifactId>
+            <version>1.2.3</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.shiro</groupId>
+            <artifactId>shiro-aspectj</artifactId>
+            <version>1.2.3</version>
+        </dependency>
   </dependencies>
   	<!-- 版本锁定  -->
     <dependencyManagement>

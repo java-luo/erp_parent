@@ -7,7 +7,7 @@
             <generator class="org.hibernate.id.enhanced.SequenceStyleGenerator"> <param name="sequence_name">emp_seq</param> </generator>
         </id>
         <property name="username" /> 
-        <property name="pwd" update="false" /> 
+        <property name="pwd" /> 
         <property name="name" /> 
         <property name="gender" /> 
         <property name="email" /> 
