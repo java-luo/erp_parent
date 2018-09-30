@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.struts2.ServletActionContext;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 
 import cn.itcast.erp.biz.IBaseBiz;
 
@@ -31,48 +32,61 @@ public abstract class BaseAction<T> {
 	private int rows;
 	private long id;
 	public void getList(){
-		//·â×°ÏìÓ¦¸ø·ÖÒ³µÃ½á¹û¼¯  total{²éÑ¯³öÌõÊı},rows[½á¹û¼¯Êı×é]
 		Map<String,Object> map=new HashMap();
-		//¿ªÊ¼Î»ÖÃ
+		//è®¡ç®—å¼€å§‹ä½ç½®
 		int FristResult=(page-1)*rows;
 		List<T> list = baseBiz.getList(t1,FristResult,rows);
 		long count=baseBiz.getCount(t1);
 		map.put("total", count);
 		map.put("rows", list);
-		String json=JSON.toJSONString(map);
+		
+		String json=JSON.toJSONString(map,SerializerFeature.DisableCircularReferenceDetect);
 		write(json);
 	}
+	public void list(){
+		Map<String,Object> map=new HashMap();
+		//è®¡ç®—å¼€å§‹ä½ç½®
+		int FristResult=(page-1)*rows;
+		List<T> list = baseBiz.getList(t1,FristResult,100);
+		String json=JSON.toJSONString(list,SerializerFeature.DisableCircularReferenceDetect);
+		write(json);
+	}
+	
 	public void save(){
 		try {
 			baseBiz.save(t1);
-			write(ajaxReturn(true, "Ìí¼Ó³É¹¦"));
+			write(ajaxReturn(true, "æ·»åŠ æˆåŠŸ"));
 		} catch (Exception e) {
-			write(ajaxReturn(false, "·¢ÉúÒì³£"));
+			e.printStackTrace();
+			write(ajaxReturn(false, "æ·»åŠ å¤±è´¥"));
 		}
 	}
 	public void delete(){
 		try {
 			System.out.println(id);
 			baseBiz.delete(id);
-			write(ajaxReturn(true, "É¾³ı³É¹¦"));
+			write(ajaxReturn(true, "åˆ é™¤æˆåŠŸ"));
 		} catch(Exception e)  {
 			e.printStackTrace();
 			// TODO: handle finally clause
-			write(ajaxReturn(false, "·¢ÉúÒì³£"));
+			write(ajaxReturn(false, "åˆ é™¤å¤±è´¥"));
 		}
 	}
 	public void update(){
 		try {
 			baseBiz.update(t1);
-			write(ajaxReturn(true, "ĞŞ¸Ä³É¹¦"));
+			write(ajaxReturn(true, "ä¿®æ”¹æˆåŠŸ"));
 		} catch (Exception e) {
 			// TODO: handle exception
-			write(ajaxReturn(false, "·¢ÉúÒì³£"));
+			write(ajaxReturn(false, "ä¿®æ”¹å¤±è´¥"));
 		}
 	}
 	public void get(){
 		T t=(T) baseBiz.get(id);
-		String json=mapJson(JSON.toJSONString(t), "t1");
+		//è½¬æ¢ä¸ºjsonå­—ç¬¦ä¸² å¦‚æœæœ‰dateç±»å‹çš„ è½¬æ¢ä¸ºæŒ‡å®šæ ¼å¼çš„æ—¶é—´ç±»å‹
+		String jsonString = JSON.toJSONStringWithDateFormat(t,"yyyy-MM-dd");
+		//åŠ å‰ç¼€
+		String json=mapJson(jsonString, "t1");
 		write(json);
 	}
 	private String ajaxReturn(boolean success,String msg){
@@ -83,10 +97,10 @@ public abstract class BaseAction<T> {
 		return	json;
 	}  
 	/**
-	 * ³éÈ¡¹«¹²Ğ´·½·¨
+	 * å‘å‰å°ç›¸åº”æ•°æ®
 	 * @param json
 	 */
-	private void write(String json) {
+	protected void write(String json) {
 		HttpServletResponse response= ServletActionContext.getResponse();
 		response.setContentType("text/html;charset=utf-8");
 		try {
@@ -97,19 +111,27 @@ public abstract class BaseAction<T> {
 		}
 	}
 	/**
-	 * ¸øjson¼ÓÉÏÇ°×º
-	 * @param json :ĞèÒªĞŞ¸ÄµÄjson
-	 * @param prefix:¼ÓµÄÇ°×º
+	 * ç»™æŒ‡å®šjsonåŠ å‰ç¼€
+	 * @param json :ä¼ é€’è¿‡æ¥çš„å‚æ•°
+	 * @param prefix:æ·»åŠ çš„å‰ç¼€
 	 * @return
 	 */
 	private String mapJson(String json,String prefix){
-		System.out.println(json);
-		//½«json×ª»»Îªmap
  		Map<String, Object> map=JSON.parseObject(json);
 		Map<String,Object> newMap=new HashMap<String, Object>();
-		//±éÀúËùÓĞµÄkey¼ÓÉÏÇ°×º´æÈëĞÂmapÖĞ
+		//ç»™jsonå­—ç¬¦ä¸²åŠ å‰ç¼€
 		for (String key:map.keySet()) {
-			newMap.put(prefix+"."+key, map.get(key));
+			//å¦‚æœä»–é‡Œè¾¹è¿˜æœ‰å…¶ä»–jsonå¯¹è±¡  ç»™ä»–çš„å±æ€§ä¹ŸåŠ ä¸Šå‰ç¼€
+			if(map.get(key) instanceof Map){
+				//å–å‡ºä»–çš„key
+				Map<String,Object> map2=(Map<String, Object>) map.get(key);
+				//ç»™ä»–åŠ ä¸Šå‰ç¼€
+				for(String k :map2.keySet()){
+					newMap.put(prefix+"."+key+"."+k, map2.get(k));
+				}
+			}else{
+				newMap.put(prefix+"."+key, map.get(key));
+			}
 		}
 		String newJson=JSON.toJSONString(newMap);
 		return newJson;
@@ -126,11 +148,9 @@ public abstract class BaseAction<T> {
 	public void setT1(T t1) {
 		this.t1 = t1;
 	}
-
 	public int getPage() {
 		return page;
 	}
-
 	public void setPage(int page) {
 		this.page = page;
 	}
@@ -138,10 +158,7 @@ public abstract class BaseAction<T> {
 	public int getRows() {
 		return rows;
 	}
-
 	public void setRows(int rows) {
 		this.rows = rows;
 	}
-		
-	
 }

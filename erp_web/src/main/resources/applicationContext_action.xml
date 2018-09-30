@@ -15,5 +15,20 @@
 	<bean id="depAction" class="cn.itcast.erp.action.DepAction" scope="prototype">
 	
 	</bean>
+	<bean id="empAction" class="cn.itcast.erp.action.EmpAction" scope="prototype">
+	
+	</bean>
+	<bean id="goodsAction" class="cn.itcast.erp.action.GoodsAction" scope="prototype">
+	
+	</bean>
+	<bean id="goodsTypeAction" class="cn.itcast.erp.action.GoodsTypeAction" scope="prototype">
+	
+	</bean>
+	<bean id="loginAction" class="cn.itcast.erp.action.LoginAction" scope="prototype">
+	
+	</bean>
+	<bean id="menuAction" class="cn.itcast.erp.action.MenuAction" scope="prototype">
+	
+	</bean>
 </beans>
 	

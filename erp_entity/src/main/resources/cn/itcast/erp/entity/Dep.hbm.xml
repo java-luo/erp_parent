@@ -10,6 +10,7 @@
 		</id>
 		<property name="name"></property>
 		<property name="tele"></property>
+		
 	</class>
 </hibernate-mapping>
 

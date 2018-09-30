@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>菜单管理</title>
+<link rel="stylesheet" type="text/css" href="ui/themes/default/easyui.css">   
+<link rel="stylesheet" type="text/css" href="ui/themes/icon.css">   
+<script type="text/javascript" src="ui/jquery.min.js"></script>   
+<script type="text/javascript" src="ui/jquery.easyui.min.js"></script>  
+<script type="text/javascript" src="ui/locale/easyui-lang-zh_CN.js"></script>
+<script type="text/javascript" src="ui/jquery.serializejson.min.js"></script>
+<script type="text/javascript" src="js/crud.js"></script>
+<script type="text/javascript" src="ui/date.js"></script>
+<script>
+	var name='menu';
+	var columns=[[
+		  		    {field:'menuid',title:'菜单ID',width:100},
+		  		    {field:'menuname',title:'菜单名称',width:100},
+		  		    {field:'icon',title:'图标',width:100},
+		  		    {field:'url',title:'URL',width:100},
+		  		    {field:'pid',title:'上级菜单ID',width:100},
+
+		  		  {field:'-',title:'编辑', width:80,
+						formatter: function(value,row,index){
+						var ret="<a href='#' onclick='update("+row.menuid+")'> 修改</a>";	
+						return  ret+" "+"<a href='#' onclick='del("+row.menuid+")'> 删除</a>";	
+						}
+					}
+					]];
+
+</script>
+
+</head>	
+<div class="easyui-panel" > 
+<form id="searchFrom">
+	<table>
+		<tr>
+			<td>真实姓名</td>
+			<td><input type="text" name="t1.name" ></td>
+		 </tr>
+		 <tr>
+			<td>员工电话</td>
+			<td><input type="text" name="t1.tele"></td>
+		 </tr>
+		 <tr>
+			<td>员工名称</td>
+			<td><input type="text" name="t1.username"></td>
+		 </tr>
+	</table>
+</form>
+<button id="btnSearch">查询</button>
+</div>
+<body>
+	<table id="dg"></table>  
+	<div id="dd">
+		<form id="editForm">
+		
+
+		<table>
+			<tr>
+				<td>菜单Id</td><td><input name="t1.menuid" type="text">  </td>
+			</tr>
+			<tr>
+				<td>菜单名称</td><td><input name="t1.menuname"> </td>
+			</tr>
+			<tr>
+				<td>图标</td><td><input name="t1.icon"> </td>
+			</tr>
+			<tr>
+				<td>URL</td><td><input name="t1.url"> </td>
+			</tr>
+			<tr>
+				<td>上级菜单ID</td><td><input name="t1.pid"> </td>
+			</tr>
+
+		</table>
+		</form>
+		<button id="btnSave">保存</button>
+	</div>  
+	
+</body>
+</html>

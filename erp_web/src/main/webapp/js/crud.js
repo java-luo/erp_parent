@@ -19,7 +19,7 @@ $(function(){
 			//将表单中得数据转换为JSON对象
 			var formdata=$('#searchFrom').serializeJSON();
 			//将Json对象转换为字符串
-			alert(JSON.stringify(formdata));
+			
 			//$('属性选择器').插件名(方法名,参数);
 			
 			//重新带着参数加载数据
@@ -62,7 +62,16 @@ $(function(){
 		    height: 200,    
 		    closed: true,    
 		    modal: true   
-		});  
+		});
+		$('#dd1').dialog({    
+		    title: '部门详情',    
+		    width: 400,    
+		    height: 200,    
+		    closed: true,    
+		    modal: true   
+		});
+		
+		
 	})
 	function del(uuid){
 		$.messager.confirm('确认','您确认想要删除记录吗？',function(r){    

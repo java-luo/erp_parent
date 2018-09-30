@@ -22,7 +22,7 @@ import cn.itcast.erp.dao.IDepDao;
 import cn.itcast.erp.entity.Dep;
 
 /**
- * ²¿ÃÅÊı¾İ·ÃÎÊ²ãÊµÏÖ
+ * éƒ¨é—¨æ•°æ®è®¿é—®å±‚
  * @author javaluo
  *
  */
@@ -40,7 +40,6 @@ public  class DepDaoImpl extends BaseDaoImpl<Dep> implements IDepDao {
 	@Override
 	public DetachedCriteria getDetachedCriteria(Dep t) {
 		DetachedCriteria criteria= DetachedCriteria.forClass(getClazz());
-		//Ìõ¼ş²éÑ¯
 		if(t!=null){
 			if(t.getName()!=null&&t.getName().trim().length()>0){
 				criteria.add(Restrictions.like("name", t.getName(),MatchMode.ANYWHERE));
